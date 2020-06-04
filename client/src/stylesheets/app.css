@@ -1,0 +1,19 @@
+.App {
+	height: 100vh;
+	width: 100vw;
+	padding: 1rem;
+}
+
+.nav {
+	background-color: lightblue;
+}
+.nav * {
+	margin-left: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#nav_header {
+	font-size: 3rem;
+}
