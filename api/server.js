@@ -12,8 +12,12 @@ http.createServer((req, res) => {
 		brand: 'Stop N Shop',
 		categories: [
 			{
-				key: Math.floor(Math.random * 1000000),
-				item: 1
+				key: 1234,
+				item: 'Hand Tools' // These will come from DB eventually 
+			}, 
+			{
+				key: 2341,
+				item: 'Power Tools' // These will come from DB eventually 
 			} 
 		] 
 	} 

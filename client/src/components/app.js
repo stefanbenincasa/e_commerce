@@ -7,7 +7,8 @@ import {
 	Dropdown, 
 	DropdownItem, 
 	DropdownToggle, 
-	DropdownMenu} 
+	DropdownMenu
+} 
 from 'reactstrap';
 
 export default function App() {
@@ -16,31 +17,42 @@ export default function App() {
 	const [content, setContent] = useState({});
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
+	// Data must be sorted through, with each property stored
+	// in its own stateful variable
 	useEffect(() => {
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
 		.then(data => setContent(data))
-	}, [content]);
+	}, []);
 
 	/// Functions
 	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
-	const log = () => console.log(content); 
+	const categories = () => {
 
-	const isCategories = () => {
-		if (content.categories === undefined) return null 
-		else { 
+		let jsx;
+
+		if (content.categories === undefined) {
+			jsx = null;
+		}
+		else {
+			jsx = [];
 			content.categories.map(category => {
-				return <p key={category.key}>{category}</p>
+				jsx.push(
+					<DropdownItem
+					key={category.key}>
+						{category.item}
+					</DropdownItem>
+				);
 			})
 		}
+
+		return jsx;
 	}
 
 	/// Render
 	return (
-
 		<div className="App">
-
 			<Nav>
 				<p
 				id='nav_header'>
@@ -53,15 +65,11 @@ export default function App() {
 					<DropdownToggle nav caret>
 						Products	
 					</DropdownToggle>
-					<DropdownMenu>
-						{isCategories()} 
+					<DropdownMenu children>
+						{categories()}
 					</DropdownMenu>
 				</Dropdown>
 			</Nav>
-
-			<button onClick={log}> Log </button>
-
 		</div>
-
 	);
 }
