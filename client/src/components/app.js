@@ -27,6 +27,15 @@ export default function App() {
 
 	const log = () => console.log(content); 
 
+	const isCategories = () => {
+		if (content.categories === undefined) return null 
+		else { 
+			content.categories.map(category => {
+				return <p key={category.key}>{category}</p>
+			})
+		}
+	}
+
 	/// Render
 	return (
 
@@ -45,7 +54,7 @@ export default function App() {
 						Products	
 					</DropdownToggle>
 					<DropdownMenu>
-						<DropdownItem>{content.categories[0]}</DropdownItem>
+						{isCategories()} 
 					</DropdownMenu>
 				</Dropdown>
 			</Nav>

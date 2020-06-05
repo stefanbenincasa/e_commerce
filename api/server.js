@@ -10,7 +10,12 @@ http.createServer((req, res) => {
 	/// Determine core aspects of the over DB Model 
 	const data = {
 		brand: 'Stop N Shop',
-		categories: [1,2,3] 
+		categories: [
+			{
+				key: Math.floor(Math.random * 1000000),
+				item: 1
+			} 
+		] 
 	} 
 
   res.writeHead(200, {
@@ -21,4 +26,3 @@ http.createServer((req, res) => {
 	res.end(JSON.stringify(data));
 
 }).listen(port, console.log(`Server listening on port : ${port}`)); 
-
