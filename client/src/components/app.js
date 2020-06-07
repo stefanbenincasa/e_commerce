@@ -15,10 +15,10 @@ export default function App() {
 
 	/// Hooks
 	const [content, setContent] = useState({});
+	const [desiredCategory, setCategory] = useState(); 
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
-	// Data must be sorted through, with each property stored
-	// in its own stateful variable
+	// Data from server 
 	useEffect(() => {
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
@@ -29,25 +29,14 @@ export default function App() {
 	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
 	const categories = () => {
-
-		let jsx;
-
-		if (content.categories === undefined) {
-			jsx = null;
-		}
-		else {
-			jsx = [];
-			content.categories.map(category => {
-				jsx.push(
-					<DropdownItem
-					key={category.key}>
-						{category.item}
-					</DropdownItem>
-				);
-			})
-		}
-
-		return jsx;
+		return content.products.map(product => {
+			return (
+				<DropdownItem
+				key={product.productId}>
+					{product.category}
+				</DropdownItem>
+			)
+		})
 	}
 
 	/// Render
@@ -66,7 +55,7 @@ export default function App() {
 						Products	
 					</DropdownToggle>
 					<DropdownMenu children>
-						{categories()}
+						{content.products !== undefined && categories()}
 					</DropdownMenu>
 				</Dropdown>
 			</Nav>

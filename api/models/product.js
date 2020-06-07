@@ -1,47 +1,37 @@
 /// Modules
-const connection = require('./connection');
+const connection = require('./connection')
 
 /// Queries
-const getProducts = () => {
-	connection.query(
-		`SELECT * FROM PRODUCT`,
-		function (error, results) {
-			if (error) {
-				throw error;
+const getProducts = (req, res) => {
+	return new Promise((resolve, reject) => {
+		connection.query(
+			`SELECT * FROM PRODUCT`,
+			function (error, results) {
+				if (error) {
+					reject(Error(error))
+				}
+				else {
+					resolve(results)
+				} 
 			}
-			else {
-				return results;
-			} 
-		}
-	); 
+		)
+	})
 } 
 
-const getProductsById = (id) => {
-	connection.query(
-		`SELECT * FROM PRODUCT WHERE productId ${connection.escape(id)}`,
-		function (error, results) {
-			if (error) {
-				throw error;
+const getProductCategories = (req, res) => {
+	return new Promise((resolve, reject) => {
+		connection.query(
+			`SELECT DISTINCT category FROM PRODUCT`,
+			function (error, results) {
+				if (error) {
+					reject(Error(error))
+				}
+				else {
+					resolve(results)
+				} 
 			}
-			else {
-				return results;
-			} 
-		}
-	); 
-} 
-
-const getProductCategories = () => {
-	connection.query(
-		`SELECT DISTINCT category FROM PRODUCT;`,
-		function (error, results) {
-			if (error) {
-				throw error;
-			}
-			else {
-				return results;
-			} 
-		}
-	);
+		)
+	})
 }
 
-module.exports = { getProducts , getProductsById }
+module.exports = { getProducts , getProductCategories }
