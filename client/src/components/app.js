@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import Landing from './landing';
-import Category from './category';
-import '../stylesheets/app.css';
+import React, {useState, useEffect} from 'react'
+import Product from './product'
+import Landing from './landing'
+import Category from './category'
+import '../stylesheets/app.css'
 
 import { 
 	Nav, 
@@ -12,14 +13,14 @@ import {
 	DropdownToggle, 
 	DropdownMenu
 } 
-from 'reactstrap';
+from 'reactstrap'
 
 import { 
 	useHistory,
 	Switch,
 	Route,
 	Link
-} from 'react-router-dom';
+} from 'react-router-dom'
 import { 
 	withRouter 
 } from 'react-router'
@@ -32,7 +33,7 @@ export default withRouter(function App() {
 	const [content, setContent] = useState({})
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [desiredCategory, setDesiredCategory] = useState()
- 	const history = useHistory();
+ 	const history = useHistory()
 
 	// Data from server 
 	useEffect(() => {
@@ -48,7 +49,7 @@ export default withRouter(function App() {
 
 	/// Functions
 
-	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+	const toggleDropdown = () => setDropdownOpen(!dropdownOpen)
 
 	const handleCategoryChange = e => {
 		setDesiredCategory(e.target.innerText)
@@ -106,11 +107,16 @@ export default withRouter(function App() {
 				/>
 				<Route 
 				exact 
+				path='/product/:productId'
+				render={() => <Product text='Test'/>}
+				/>
+				<Route 
+				exact 
 				path='/'
 				render={() => <Landing products={content.products}/>}
 				/>
 			</Switch>
 
 		</div>
-	);
+	)
 })

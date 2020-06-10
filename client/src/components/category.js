@@ -1,7 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 
 import { 
 	Jumbotron,
+	Card,
+	CardText,
+	CardImg,
+	CardBody,
+	CardTitle,
 	Button
 } 
 from 'reactstrap';
@@ -20,8 +25,26 @@ export default function Category({desiredCategory, products}) {
 
 	/// Functions
 	const productCards = function() {
+
 		return products.map(product => {
-			return <p key={product.productId}>{product.productName}</p>
+			if (product.category === desiredCategory) {  
+				return (
+					<Card 
+					key={product.productId}
+					id={product.productId}
+					>
+						<CardImg top 
+						src={product.thumbnail}
+						alt='Product image here...'
+						/>
+						<CardBody>
+							<CardTitle>{product.productName}</CardTitle>
+							<CardText>{product.description}</CardText>
+							<Button>View Product</Button>
+						</CardBody>
+					</Card>
+				)
+			}
 		})
 	}
 
@@ -32,8 +55,10 @@ export default function Category({desiredCategory, products}) {
 		return (
 			<div
 			className='Category'>
-				<h1>{desiredCategory}</h1>
-				<div>
+				<h1>Categories</h1>
+				<h2>{desiredCategory}</h2>
+				<div 
+				className='products'>
 					{productCards()}
 				</div>
 			</div>
@@ -45,7 +70,8 @@ export default function Category({desiredCategory, products}) {
 		return (
 			<div
 			className='Category'>
-				<h1>{desiredCategory}</h1>
+				<h1>Categories</h1>
+				<h2>{desiredCategory}</h2>
 				<div>
 					No category selected
 				</div>

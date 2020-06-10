@@ -85,8 +85,38 @@ html, body {
 	}
 
 .Category {
+	height: 100%;
+	width: 100%;
 	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
+	.Category h1 {
+		font-size: 4rem;	
+	}
+	.Category .products {
+		height: 100%;
+		margin-top: 1rem;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+	}
+	.Category img {
+		max-height: 100px;
+		max-width: 100px;
+		margin: 2rem auto;
+	}
+	.Category .card {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	.Category .card-body {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
 
 /* Utility Classes */
 .default {
