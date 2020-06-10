@@ -1,5 +1,8 @@
-import '../stylesheets/app.css';
 import React, {useState, useEffect} from 'react';
+import Landing from './landing';
+import Categories from './categories';
+import '../stylesheets/app.css';
+
 import { 
 	Nav, 
 	NavItem, 
@@ -11,12 +14,22 @@ import {
 } 
 from 'reactstrap';
 
-export default function App() {
+import { 
+	useHistory,
+	Switch,
+	Route,
+	Link
+} from 'react-router-dom';
+import { 
+	withRouter 
+} from 'react-router'
+
+export default withRouter(function App() {
 
 	/// Hooks
-	const [content, setContent] = useState({});
-	const [desiredCategory, setCategory] = useState(); 
-	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [content, setContent] = useState({})
+	const [dropdownOpen, setDropdownOpen] = useState(false)
+ 	const history = useHistory();
 
 	// Data from server 
 	useEffect(() => {
@@ -28,11 +41,15 @@ export default function App() {
 	/// Functions
 	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
+	const handleCategoryChange = e => history.push('/category')
+
 	const categories = () => {
 		return content.products.map(product => {
 			return (
 				<DropdownItem
-				key={product.productId}>
+				className='default'
+				key={product.productId}
+				onClick={handleCategoryChange}>
 					{product.category}
 				</DropdownItem>
 			)
@@ -42,13 +59,16 @@ export default function App() {
 	/// Render
 	return (
 		<div className="App">
+
 			<Nav>
 				<p
+				className='default'
 				id='nav_header'>
-					{content.brand}
+					Stop N Shop
 				</p>
 				<Dropdown
 				nav
+				className='default'
 				isOpen={dropdownOpen}
 				toggle={toggleDropdown}>
 					<DropdownToggle nav caret>
@@ -59,6 +79,20 @@ export default function App() {
 					</DropdownMenu>
 				</Dropdown>
 			</Nav>
+
+
+			<Switch>
+				<Route path='/categories'>
+					<Categories products={content.products}/>
+				</Route>
+				<Route path='/product/:productId'>
+
+				</Route>
+				<Route exact path='/'>
+					<Landing products={content.products}/>
+				</Route>
+			</Switch>
+
 		</div>
 	);
-}
+})
