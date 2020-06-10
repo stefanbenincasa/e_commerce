@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Landing from './landing';
-import Categories from './categories';
+import Category from './category';
 import '../stylesheets/app.css';
 
 import { 
@@ -27,8 +27,11 @@ import {
 export default withRouter(function App() {
 
 	/// Hooks
+
+	// Basic 
 	const [content, setContent] = useState({})
 	const [dropdownOpen, setDropdownOpen] = useState(false)
+	const [desiredCategory, setDesiredCategory] = useState()
  	const history = useHistory();
 
 	// Data from server 
@@ -36,12 +39,21 @@ export default withRouter(function App() {
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
 		.then(data => setContent(data))
-	}, []);
+	}, [])
+
+	// Log 'desiredCategory'
+	useEffect(() => {
+		console.log(`Desired Category : ${desiredCategory}`)
+	}, [desiredCategory])
 
 	/// Functions
+
 	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
-	const handleCategoryChange = e => history.push('/category')
+	const handleCategoryChange = e => {
+		setDesiredCategory(e.target.innerText)
+		history.push('/category')
+	} 
 
 	const categories = () => {
 		return content.products.map(product => {
@@ -82,15 +94,21 @@ export default withRouter(function App() {
 
 
 			<Switch>
-				<Route path='/categories'>
-					<Categories products={content.products}/>
-				</Route>
-				<Route path='/product/:productId'>
-
-				</Route>
-				<Route exact path='/'>
-					<Landing products={content.products}/>
-				</Route>
+				<Route 
+				path='/category'
+				render={
+					() => 
+					<Category 
+					desiredCategory={desiredCategory} 
+					products={content.products}
+					/>
+				}
+				/>
+				<Route 
+				exact 
+				path='/'
+				render={() => <Landing products={content.products}/>}
+				/>
 			</Switch>
 
 		</div>

@@ -23,6 +23,23 @@ html, body {
 	padding: 1rem;
 }
 
+.nav {
+	background-color: rgba(51,153,255,1); 
+}
+	.nav * {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		color: white;
+	}
+	.nav button {
+		font-size: 1rem;
+	}
+	#nav_header {
+	 padding: 1rem;
+	}
+
 .Landing {
 	height: 100%;
 	width: 100%;
@@ -67,22 +84,9 @@ html, body {
 		background-color: var(--primary-color);
 	}
 
-.nav {
-	background-color: rgba(51,153,255,1); 
+.Category {
+	padding: 1rem;
 }
-	.nav * {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		color: white;
-	}
-	.nav button {
-		font-size: 1rem;
-	}
-	#nav_header {
-	 padding: 1rem;
-	}
 
 /* Utility Classes */
 .default {
