@@ -92,6 +92,9 @@ html, body {
 	flex-direction: column;
 	align-items: center;
 }
+	.Category * {
+		color: black;
+	}
 	.Category h1 {
 		font-size: 4rem;	
 	}
@@ -116,8 +119,8 @@ html, body {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		color: black;
 	}
-
 /* Utility Classes */
 .default {
 	margin: 0;

@@ -1,3 +1,5 @@
+//// Category 
+
 import React, {useState, useEffect} from 'react'
 
 import { 
@@ -17,7 +19,7 @@ import {
 	Link
 } from 'react-router-dom';
 
-export default function Category({desiredCategory, products}) {
+export default function Category({desiredCategory, products, toProduct}) {
 
 	/// Variables
 
@@ -40,7 +42,7 @@ export default function Category({desiredCategory, products}) {
 						<CardBody>
 							<CardTitle>{product.productName}</CardTitle>
 							<CardText>{product.description}</CardText>
-							<Button>View Product</Button>
+							<Button onClick={toProduct}>View Product</Button>
 						</CardBody>
 					</Card>
 				)

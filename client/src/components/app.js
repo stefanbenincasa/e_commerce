@@ -1,3 +1,5 @@
+//// Application 
+
 import React, {useState, useEffect} from 'react'
 import Product from './product'
 import Landing from './landing'
@@ -16,14 +18,15 @@ import {
 from 'reactstrap'
 
 import { 
+	withRouter 
+} from 'react-router'
+import { 
 	useHistory,
+	useParams,
 	Switch,
 	Route,
 	Link
 } from 'react-router-dom'
-import { 
-	withRouter 
-} from 'react-router'
 
 export default withRouter(function App() {
 
@@ -69,6 +72,13 @@ export default withRouter(function App() {
 		})
 	}
 
+	const toProduct = e => {
+
+		// Function should reroute
+		const productId = e.target.parentElement.parentElement.id
+		history.push(`/product/${productId}`)
+	} 
+
 	/// Render
 	return (
 		<div className="App">
@@ -100,20 +110,31 @@ export default withRouter(function App() {
 				render={
 					() => 
 					<Category 
-					desiredCategory={desiredCategory} 
 					products={content.products}
+					desiredCategory={desiredCategory} 
+					toProduct={toProduct}
 					/>
 				}
 				/>
 				<Route 
 				exact 
 				path='/product/:productId'
-				render={() => <Product text='Test'/>}
+				render={ 
+					() => 
+					<Product 
+					products={content.products} 
+					/> 
+				}
 				/>
 				<Route 
 				exact 
 				path='/'
-				render={() => <Landing products={content.products}/>}
+				render={ 
+					() => 
+					<Landing 
+					products={content.products} 
+					/> 
+				}
 				/>
 			</Switch>
 
