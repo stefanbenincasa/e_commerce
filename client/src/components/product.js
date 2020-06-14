@@ -29,22 +29,14 @@ export default withRouter(function Product({products}) {
 	/// Hooks
 	const desiredId = 
 		useParams().productId
-		console.log(desiredId)
-	const [product, setProduct] = 
+	const [output, setOutput] = 
 		useState()
 
-	/// Functions
 	useEffect(() => {
-		if (products === undefined || desiredId === undefined) return  
-		getProductById(desiredId)
-		.then(product => {
-			setProduct(product)
-		})
-		.catch(error => {
-			setProduct(undefined)
-			console.error(error.message)
-		})
-	}, [desiredId])
+		determineOutput()
+	})
+
+	/// Functions
 
 	// Search through products with id from url 
 	const getProductById = function (desiredId) {
@@ -62,18 +54,29 @@ export default withRouter(function Product({products}) {
 
 	}
 
-	/// Render
-	if (product === undefined) {
-		return (
-			<h1> No product </h1>
-		)
-	}
-	else {
-		return ( 
-			<div>
-				<h1> {product.productName} </h1>
-			</div>
-		)
+	// Determine output
+	const determineOutput = function () {
+		if (products === undefined || desiredId === undefined) return  
+		else {
+			getProductById(desiredId)
+			.then(product => {
+				setOutput(
+					<h1> {product.productName} </h1>
+				)
+			})
+			.catch(error => {
+				console.error(error.message)
+				setOutput(
+					<h1>No Product</h1>
+				)
+			})
+		}
 	}
 
+	/// Render
+	return (
+		<div>
+			{output}
+		</div>
+	)
 })
