@@ -26,34 +26,54 @@ from 'reactstrap';
 
 export default withRouter(function Product({products}) {
 
-	/// Variables
-
 	/// Hooks
-	const desiredId = useParams()
-	const [product, setProduct] = useState()
-
-	useEffect(() => {
-		getProductById()
-		.then(console.log)
-		.catch(console.error)
-	}, [])
+	const desiredId = 
+		useParams().productId
+		console.log(desiredId)
+	const [product, setProduct] = 
+		useState()
 
 	/// Functions
+	useEffect(() => {
+		if (products === undefined || desiredId === undefined) return  
+		getProductById(desiredId)
+		.then(product => {
+			setProduct(product)
+		})
+		.catch(error => {
+			setProduct(undefined)
+			console.error(error.message)
+		})
+	}, [desiredId])
 
 	// Search through products with id from url 
-	const getProductById = function () {
+	const getProductById = function (desiredId) {
+		
 		return new Promise((resolve, reject) => {
 			products.forEach((product, index) => {
-				if (product.productId == desiredId) resolve(product)
-				if (index == products.length - 1) reject(Error('Product not found.'))
+				if (product.productId == desiredId) {
+					resolve(product)
+				}
+				if (index == products.length - 1) {
+					reject(Error('Desired product absent'))
+				}
 			})
 		})
+
 	}
 
 	/// Render
-	return (
-		<div>
-			{products !== undefined ? getProductById() : null}
-		</div>
-	)
+	if (product === undefined) {
+		return (
+			<h1> No product </h1>
+		)
+	}
+	else {
+		return ( 
+			<div>
+				<h1> {product.productName} </h1>
+			</div>
+		)
+	}
+
 })
