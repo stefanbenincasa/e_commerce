@@ -6,6 +6,8 @@ import
 from 'react'
 
 import { 
+	Route,
+	Link,
 	useParams,
 	useHistory
 } from 'react-router-dom'
@@ -20,9 +22,15 @@ import {
 	CardImg,
 	CardBody,
 	CardTitle,
-	Button
-} 
-from 'reactstrap';
+	Button,
+	Nav, 
+	NavItem, 
+	NavLink, 
+	Dropdown, 
+	DropdownItem, 
+	DropdownToggle, 
+	DropdownMenu
+} from 'reactstrap' 
 
 export default withRouter(function Product({products}) {
 
@@ -46,7 +54,7 @@ export default withRouter(function Product({products}) {
 				if (product.productId == desiredId) {
 					resolve(product)
 				}
-				if (index == products.length - 1) {
+				if (index === products.length - 1) {
 					reject(Error('Desired product absent'))
 				}
 			})
@@ -61,7 +69,35 @@ export default withRouter(function Product({products}) {
 			getProductById(desiredId)
 			.then(product => {
 				setOutput(
-					<h1> {product.productName} </h1>
+					<>
+						<img 
+						className='thumbnail'
+						src={product.thumbnail}
+						alt='Thumbnail here...'/>
+						<div 
+						className='details'>
+							<div
+							className='headings'> 
+								<h2> 
+									{product.category} 
+								</h2>
+							</div>
+							<h1> 
+								{product.productName} 
+							</h1>
+							<p 
+							className='desc'> 
+								{product.description} 
+							</p>
+							<p> 
+								$ {product.price} 
+							</p>
+							<Button
+							className='addToCart'>
+									Add To Cart
+							</Button>
+						</div>
+					</>
 				)
 			})
 			.catch(error => {
@@ -75,7 +111,8 @@ export default withRouter(function Product({products}) {
 
 	/// Render
 	return (
-		<div>
+		<div
+		className='Product'>
 			{output}
 		</div>
 	)

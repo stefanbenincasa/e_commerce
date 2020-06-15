@@ -1,17 +1,27 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react'
 
 import { 
+	Nav, 
+	NavItem, 
+	NavLink, 
 	Jumbotron,
-	Button
+	Dropdown, 
+	DropdownItem, 
+	DropdownToggle, 
+	DropdownMenu
 } 
-from 'reactstrap';
+from 'reactstrap'
 
 import { 
 	BrowserRouter as Router,
 	Switch,
 	Route,
-	Link
-} from 'react-router-dom';
+	Link,
+	useParams
+} from 'react-router-dom'
+import { 
+	withRouter 
+} from 'react-router'
 
 export default function Landing({products}) {
 
@@ -33,14 +43,14 @@ export default function Landing({products}) {
 					the market has to offer
 				</h1>
 				<h2>
-					Peruse the latest selection of quality wares producers from around
+					Peruse the latest selection of quality wares from producers around
 					the world and your local community.
 				</h2>
 				<div className='overlay'></div>
 			</Jumbotron>
 			<div
 			id='latestItems'>
-				// Cards of products here; ordered latest to oldest
+				// Cards of products here ordered latest to oldest
 			</div>
 		</div>
 	)

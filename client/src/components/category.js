@@ -9,19 +9,35 @@ import {
 	CardImg,
 	CardBody,
 	CardTitle,
-	Button
+	Button,
+	Nav, 
+	NavItem, 
+	NavLink, 
+	Dropdown, 
+	DropdownItem, 
+	DropdownToggle, 
+	DropdownMenu
 } 
 from 'reactstrap';
 
 import { 
+	useHistory,
+	useParams,
+	useRouteMatch,
 	Switch,
 	Route,
 	Link
 } from 'react-router-dom';
+import { 
+	withRouter 
+} from 'react-router'
 
-export default function Category({desiredCategory, products, toProduct}) {
+export default withRouter(function Category({products}) {
 
 	/// Variables
+	const params = useParams()
+	const match = useRouteMatch()
+	console.log(match)
 
 	/// Hooks
 
@@ -29,7 +45,7 @@ export default function Category({desiredCategory, products, toProduct}) {
 	const productCards = function() {
 
 		return products.map(product => {
-			if (product.category === desiredCategory) {  
+			if (product.category === params.desiredCategory) {  
 				return (
 					<Card 
 					key={product.productId}
@@ -42,7 +58,9 @@ export default function Category({desiredCategory, products, toProduct}) {
 						<CardBody>
 							<CardTitle>{product.productName}</CardTitle>
 							<CardText>{product.description}</CardText>
-							<Button onClick={toProduct}>View Product</Button>
+							<Link to={`/product/${product.productId}`}>
+								<Button> View Product </Button>
+							</Link>
 						</CardBody>
 					</Card>
 				)
@@ -52,13 +70,13 @@ export default function Category({desiredCategory, products, toProduct}) {
 
 
 	/// Render
-	if ( (products !== undefined) && (desiredCategory !== undefined) ) {
+	if ( (products !== undefined) && (params.desiredCategory !== undefined) ) {
 
 		return (
 			<div
 			className='Category'>
 				<h1>Categories</h1>
-				<h2>{desiredCategory}</h2>
+				<h2>{params.desiredCategory}</h2>
 				<div 
 				className='products'>
 					{productCards()}
@@ -73,7 +91,7 @@ export default function Category({desiredCategory, products, toProduct}) {
 			<div
 			className='Category'>
 				<h1>Categories</h1>
-				<h2>{desiredCategory}</h2>
+				<h2>{params.desiredCategory}</h2>
 				<div>
 					No category selected
 				</div>
@@ -81,4 +99,4 @@ export default function Category({desiredCategory, products, toProduct}) {
 		)
 		
 	}
-}
+})

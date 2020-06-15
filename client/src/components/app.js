@@ -23,6 +23,7 @@ import {
 import { 
 	useHistory,
 	useParams,
+	useRouteMatch, 
 	Switch,
 	Route,
 	Link
@@ -35,8 +36,6 @@ export default withRouter(function App() {
 	// Basic 
 	const [content, setContent] = useState({})
 	const [dropdownOpen, setDropdownOpen] = useState(false)
-	const [desiredCategory, setDesiredCategory] = useState()
- 	const history = useHistory()
 
 	// Data from server 
 	useEffect(() => {
@@ -45,39 +44,23 @@ export default withRouter(function App() {
 		.then(data => setContent(data))
 	}, [])
 
-	// Log 'desiredCategory'
-	useEffect(() => {
-		console.log(`Desired Category : ${desiredCategory}`)
-	}, [desiredCategory])
-
 	/// Functions
 
-	const toggleDropdown = () => setDropdownOpen(!dropdownOpen)
-
-	const handleCategoryChange = e => {
-		setDesiredCategory(e.target.innerText)
-		history.push('/category')
-	} 
+	const toggleDropdown = () => setDropdownOpen(prevState => !prevState)
 
 	const categories = () => {
 		return content.products.map(product => {
 			return (
 				<DropdownItem
 				className='default'
-				key={product.productId}
-				onClick={handleCategoryChange}>
-					{product.category}
+				key={product.productId}>
+					<Link to={`/category/${product.category}`}>
+						{product.category}
+					</Link>
 				</DropdownItem>
 			)
 		})
 	}
-
-	const toProduct = e => {
-
-		// Function should reroute
-		const productId = e.target.parentElement.parentElement.id
-		history.push(`/product/${productId}`)
-	} 
 
 	/// Render
 	return (
@@ -103,16 +86,13 @@ export default withRouter(function App() {
 				</Dropdown>
 			</Nav>
 
-
 			<Switch>
 				<Route 
-				path='/category'
+				path='/category/:desiredCategory'
 				render={
 					() => 
 					<Category 
 					products={content.products}
-					desiredCategory={desiredCategory} 
-					toProduct={toProduct}
 					/>
 				}
 				/>
