@@ -3,20 +3,12 @@
 import React, {useState, useEffect} from 'react'
 
 import { 
-	Jumbotron,
 	Card,
 	CardText,
 	CardImg,
 	CardBody,
 	CardTitle,
 	Button,
-	Nav, 
-	NavItem, 
-	NavLink, 
-	Dropdown, 
-	DropdownItem, 
-	DropdownToggle, 
-	DropdownMenu
 } 
 from 'reactstrap';
 
@@ -32,14 +24,14 @@ import {
 	withRouter 
 } from 'react-router'
 
-export default withRouter(function Category({products}) {
+export default withRouter(function Category({content}) {
 
 	/// Variables
 	const params = useParams()
 	const match = useRouteMatch()
-	console.log(match)
 
 	/// Hooks
+	const [products, setProducts] = useState(content.products)
 
 	/// Functions
 	const productCards = function() {
@@ -67,7 +59,6 @@ export default withRouter(function Category({products}) {
 			}
 		})
 	}
-
 
 	/// Render
 	if ( (products !== undefined) && (params.desiredCategory !== undefined) ) {

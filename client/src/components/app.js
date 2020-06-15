@@ -24,6 +24,7 @@ import {
 	useHistory,
 	useParams,
 	useRouteMatch, 
+	Redirect,
 	Switch,
 	Route,
 	Link
@@ -42,6 +43,7 @@ export default withRouter(function App() {
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
 		.then(data => setContent(data))
+		return () => setDropdownOpen(false)
 	}, [])
 
 	/// Functions
@@ -87,35 +89,39 @@ export default withRouter(function App() {
 			</Nav>
 
 			<Switch>
+
 				<Route 
-				path='/category/:desiredCategory'
+				exact path='/category/:desiredCategory'
 				render={
 					() => 
 					<Category 
-					products={content.products}
+					content={content}
 					/>
 				}
 				/>
+				<Redirect from='/category' to='/' />
+
 				<Route 
-				exact 
-				path='/product/:productId'
+				exact path='/product/:productId'
 				render={ 
 					() => 
 					<Product 
-					products={content.products} 
+					content={content} 
 					/> 
 				}
 				/>
+				<Redirect from='/product' to='/' />
+
 				<Route 
-				exact 
-				path='/'
+				exact path='/'
 				render={ 
 					() => 
 					<Landing 
-					products={content.products} 
+					content={content} 
 					/> 
 				}
 				/>
+
 			</Switch>
 
 		</div>

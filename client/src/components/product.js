@@ -16,33 +16,27 @@ import {
 } from 'react-router'
 
 import { 
-	Jumbotron,
 	Card,
 	CardText,
 	CardImg,
 	CardBody,
 	CardTitle,
-	Button,
-	Nav, 
-	NavItem, 
-	NavLink, 
-	Dropdown, 
-	DropdownItem, 
-	DropdownToggle, 
-	DropdownMenu
+	Button
 } from 'reactstrap' 
 
-export default withRouter(function Product({products}) {
+export default withRouter(function Product({content}) {
 
 	/// Hooks
 	const desiredId = 
 		useParams().productId
+	const [products, setProducts] = useState(content.products)
 	const [output, setOutput] = 
 		useState()
 
 	useEffect(() => {
 		determineOutput()
-	})
+		console.log(products)
+	}, [])
 
 	/// Functions
 
@@ -50,63 +44,64 @@ export default withRouter(function Product({products}) {
 	const getProductById = function (desiredId) {
 		
 		return new Promise((resolve, reject) => {
-			products.forEach((product, index) => {
-				if (product.productId == desiredId) {
-					resolve(product)
-				}
-				if (index === products.length - 1) {
-					reject(Error('Desired product absent'))
-				}
-			})
+			if (products === undefined || desiredId === undefined) {
+				throw Error('No products available at this time')
+			}
+			else {
+				products.forEach((product, index) => {
+					if (product.productId == desiredId) {
+						resolve(product)
+					}
+					if (index === products.length - 1) {
+						reject(Error('Desired product absent'))
+					}
+				})
+			}
 		})
 
 	}
 
 	// Determine output
 	const determineOutput = function () {
-		if (products === undefined || desiredId === undefined) return  
-		else {
-			getProductById(desiredId)
-			.then(product => {
-				setOutput(
-					<>
-						<img 
-						className='thumbnail'
-						src={product.thumbnail}
-						alt='Thumbnail here...'/>
-						<div 
-						className='details'>
-							<div
-							className='headings'> 
-								<h2> 
-									{product.category} 
-								</h2>
-							</div>
-							<h1> 
-								{product.productName} 
-							</h1>
-							<p 
-							className='desc'> 
-								{product.description} 
-							</p>
-							<p> 
-								$ {product.price} 
-							</p>
-							<Button
-							className='addToCart'>
-									Add To Cart
-							</Button>
+		getProductById(desiredId)
+		.then(product => {
+			setOutput(
+				<>
+					<img 
+					className='thumbnail'
+					src={product.thumbnail}
+					alt='Thumbnail here...'/>
+					<div 
+					className='details'>
+						<div
+						className='headings'> 
+							<h2> 
+								{product.category} 
+							</h2>
 						</div>
-					</>
-				)
-			})
-			.catch(error => {
-				console.error(error.message)
-				setOutput(
-					<h1>No Product</h1>
-				)
-			})
-		}
+						<h1> 
+							{product.productName} 
+						</h1>
+						<p 
+						className='desc'> 
+							{product.description} 
+						</p>
+						<p> 
+							$ {product.price} 
+						</p>
+						<Button
+						className='addToCart'>
+								Add To Cart
+						</Button>
+					</div>
+				</>
+			)
+		})
+		.catch(error => {
+			setOutput(
+				<h1>{error.message}</h1>
+			)
+		})
 	}
 
 	/// Render
