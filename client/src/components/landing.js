@@ -23,12 +23,11 @@ import {
 	withRouter 
 } from 'react-router'
 
-export default function Landing({content}) {
+export default function Landing(props) {
 
 	/// Variables
 
 	/// Hooks
-	const [products, setProducts] = useState(content.products)
 
 	/// Functions
 

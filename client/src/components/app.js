@@ -35,34 +35,58 @@ export default withRouter(function App() {
 	/// Hooks
 
 	// Basic 
-	const [content, setContent] = useState({})
+	const [categories, setCategories] = useState()
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 
 	// Data from server 
 	useEffect(() => {
+
 		fetch('http://localhost:5000/')
-		.then(res => res.json())
-		.then(data => setContent(data))
+			.then(res => res.json())
+			.then(data =>  {
+				setCategories(getCategories(data.products))
+			})
+
 		return () => setDropdownOpen(false)
+		
 	}, [])
 
 	/// Functions
 
 	const toggleDropdown = () => setDropdownOpen(prevState => !prevState)
 
-	const categories = () => {
-		return content.products.map(product => {
+	const getCategories = (products) => {
+		return products.map(product => {
 			return (
 				<DropdownItem
 				className='default'
 				key={product.productId}>
 					<Link to={`/category/${product.category}`}>
-						{product.category}
+						{decode(product.category)}
 					</Link>
 				</DropdownItem>
 			)
 		})
 	}
+
+	// Insert underscore delimiter 
+	const encode = function(string) {
+		return string.replace(/ /, '_').toLowerCase() 
+	} 
+
+	// Remove underscore delimiter 
+	const decode = function(string) {
+		
+		let capital, suffix
+		const formated = string.split('_').map(word => {
+			capital = word.split('').shift().toUpperCase()
+			suffix = word.substring(1, word.length) 
+			return capital.concat(suffix)
+		}).join(' ')
+	
+		return formated
+			
+	} 
 
 	/// Render
 	return (
@@ -83,7 +107,7 @@ export default withRouter(function App() {
 						Products	
 					</DropdownToggle>
 					<DropdownMenu children>
-						{content.products !== undefined && categories()}
+						{categories !== undefined && categories}
 					</DropdownMenu>
 				</Dropdown>
 			</Nav>
@@ -92,23 +116,11 @@ export default withRouter(function App() {
 
 				<Route 
 				exact path='/category/:desiredCategory'
-				render={
-					() => 
-					<Category 
-					content={content}
-					/>
-				}
 				/>
 				<Redirect from='/category' to='/' />
 
 				<Route 
 				exact path='/product/:productId'
-				render={ 
-					() => 
-					<Product 
-					content={content} 
-					/> 
-				}
 				/>
 				<Redirect from='/product' to='/' />
 
@@ -116,9 +128,7 @@ export default withRouter(function App() {
 				exact path='/'
 				render={ 
 					() => 
-					<Landing 
-					content={content} 
-					/> 
+					<Landing /> 
 				}
 				/>
 
