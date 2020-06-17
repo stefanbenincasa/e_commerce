@@ -24,84 +24,61 @@ import {
 	Button
 } from 'reactstrap' 
 
-export default withRouter(function Product({content}) {
+export default withRouter(function Product({encode, decode}) {
 
 	/// Hooks
-	const desiredId = 
-		useParams().productId
-	const [products, setProducts] = useState(content.products)
-	const [output, setOutput] = 
-		useState()
+	const desiredId = useParams().productId
+	const [output, setOutput] = useState()
 
 	useEffect(() => {
-		determineOutput()
-		console.log(products)
+
+		// Fetch from appropriate endpoint
+		fetch(`http://localhost:5000/product?id=${desiredId}`)
+		.then(res => {
+			return res.json()
+		})
+		.then(product => {
+			setOutput(getBody(product[0])) // Res is type array
+		})
+		.catch(error => {
+			setOutput( <h1>{error.message}</h1> ) 
+		})
+
 	}, [])
 
 	/// Functions
 
-	// Search through products with id from url 
-	const getProductById = function (desiredId) {
-		
-		return new Promise((resolve, reject) => {
-			if (products === undefined || desiredId === undefined) {
-				throw Error('No products available at this time')
-			}
-			else {
-				products.forEach((product, index) => {
-					if (product.productId == desiredId) {
-						resolve(product)
-					}
-					if (index === products.length - 1) {
-						reject(Error('Desired product absent'))
-					}
-				})
-			}
-		})
-
-	}
-
 	// Determine output
-	const determineOutput = function () {
-		getProductById(desiredId)
-		.then(product => {
-			setOutput(
-				<>
-					<img 
-					className='thumbnail'
-					src={product.thumbnail}
-					alt='Thumbnail here...'/>
-					<div 
-					className='details'>
-						<div
-						className='headings'> 
-							<h2> 
-								{product.category} 
-							</h2>
-						</div>
-						<h1> 
-							{product.productName} 
-						</h1>
-						<p 
-						className='desc'> 
-							{product.description} 
-						</p>
-						<p> 
+	const getBody = function (product) {
+		return (
+			<>
+				<img 
+				className='thumbnail'
+				src={product.thumbnail} />
+				<div
+				className='details'
+				>
+					<h2 className='subheading'> 
+						{decode(product.category)} 
+					</h2>
+					<h1 className='heading'> 
+						{decode(product.productName)} 
+					</h1>
+					<p className='description'> 
+						{product.description} 
+					</p>
+					<div className='footer'>
+						<p className='price'> 
 							$ {product.price} 
 						</p>
-						<Button
-						className='addToCart'>
-								Add To Cart
+						<Button className='addToCart'> 
+							Add to Cart 
 						</Button>
-					</div>
-				</>
-			)
-		})
-		.catch(error => {
-			setOutput(
-				<h1>{error.message}</h1>
-			)
-		})
+					</div> 
+
+				</div>
+			</>
+		)
 	}
 
 	/// Render

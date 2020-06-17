@@ -1,6 +1,7 @@
 //// Category 
 
 import React, {useState, useEffect} from 'react'
+import ProductPreview from './productPreview' 
 
 import { 
 	Card,
@@ -8,6 +9,7 @@ import {
 	CardImg,
 	CardBody,
 	CardTitle,
+	Spinner,
 	Button,
 } 
 from 'reactstrap';
@@ -24,70 +26,80 @@ import {
 	withRouter 
 } from 'react-router'
 
-export default withRouter(function Category({content}) {
-
-	/// Variables
-	const params = useParams()
-	const match = useRouteMatch()
+export default withRouter(function Category({encode, decode}) {
 
 	/// Hooks
-	const [products, setProducts] = useState(content.products)
+	const [output, setOutput] = useState()
+	const params = useParams()
+
+	useEffect(() => {
+
+		// Show loading animation before data is set
+		setOutput(spinner())
+		
+		// Fetch data from DB by category 'name'
+		let newStyles 
+		setTimeout(() => {
+			fetch(`http://localhost:5000/category?name=${params.name}`)
+			.then(res => {
+				return res.json()
+			})
+			.then(productsByCategory => {
+				setOutput(getBody(productsByCategory))
+			})
+			.catch(error => console.error(error))
+		}, 3000)
+
+	}, [params.name])
 
 	/// Functions
-	const productCards = function() {
+	const getBody = function (productsByCategory) {
 
-		return products.map(product => {
-			if (product.category === params.desiredCategory) {  
-				return (
-					<Card 
-					key={product.productId}
-					id={product.productId}
-					>
-						<CardImg top 
-						src={product.thumbnail}
-						alt='Product image here...'
-						/>
-						<CardBody>
-							<CardTitle>{product.productName}</CardTitle>
-							<CardText>{product.description}</CardText>
-							<Link to={`/product/${product.productId}`}>
-								<Button> View Product </Button>
-							</Link>
-						</CardBody>
-					</Card>
-				)
-			}
-		})
+		return (
+			<div>
+				<h1>{decode(params.name)}</h1>
+				<div className='products'>
+					{ productsByCategory.map(product => {
+							return (
+								<ProductPreview
+								key={product.productId}
+								productId={product.productId}
+								productName={product.productName}
+								description={product.description}
+								thumbnail={product.thumbnail}
+								/>
+							)
+						})
+					}
+				</div>
+			</div>
+		)
+	}
+
+	const spinner = function () {
+		
+		return (
+			<Spinner 
+			style={
+				{ 
+					width: '8rem', 
+					height: '8rem', 
+					position: 'absolute',
+					left: '50%',
+					top: '50%'
+				}
+			} 
+			color='primary'
+			type="grow" 
+			/>
+		)
 	}
 
 	/// Render
-	if ( (products !== undefined) && (params.desiredCategory !== undefined) ) {
-
-		return (
-			<div
-			className='Category'>
-				<h1>Categories</h1>
-				<h2>{params.desiredCategory}</h2>
-				<div 
-				className='products'>
-					{productCards()}
-				</div>
-			</div>
-		)
-
-	}
-	else {
-
-		return (
-			<div
-			className='Category'>
-				<h1>Categories</h1>
-				<h2>{params.desiredCategory}</h2>
-				<div>
-					No category selected
-				</div>
-			</div>
-		)
-		
-	}
+	return (
+		<div
+		className='Category'>
+			{output}
+		</div>
+	)
 })

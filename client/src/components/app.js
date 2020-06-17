@@ -42,10 +42,10 @@ export default withRouter(function App() {
 	useEffect(() => {
 
 		fetch('http://localhost:5000/')
-			.then(res => res.json())
-			.then(data =>  {
-				setCategories(getCategories(data.products))
-			})
+		.then(res => res.json())
+		.then(data =>  {
+			setCategories(getCategories(data.products))
+		})
 
 		return () => setDropdownOpen(false)
 		
@@ -61,7 +61,8 @@ export default withRouter(function App() {
 				<DropdownItem
 				className='default'
 				key={product.productId}>
-					<Link to={`/category/${product.category}`}>
+					<Link 
+					to={`/category/${product.category}`}>
 						{decode(product.category)}
 					</Link>
 				</DropdownItem>
@@ -87,6 +88,8 @@ export default withRouter(function App() {
 		return formated
 			
 	} 
+
+	// Display error
 
 	/// Render
 	return (
@@ -115,12 +118,26 @@ export default withRouter(function App() {
 			<Switch>
 
 				<Route 
-				exact path='/category/:desiredCategory'
+				exact path='/category/:name'
+				render={
+					() =>
+					<Category 
+					encode={encode}
+					decode={decode}
+					/>
+				}
 				/>
 				<Redirect from='/category' to='/' />
 
 				<Route 
 				exact path='/product/:productId'
+				render={
+					() => 
+					<Product 
+					encode={encode}
+					decode={decode}
+					/>
+				}
 				/>
 				<Redirect from='/product' to='/' />
 
