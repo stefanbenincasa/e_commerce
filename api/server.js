@@ -16,8 +16,13 @@ HTTP.createServer((req, res) => {
 
 		case '/' :
 
-			landing(req, res, url)
+			index(req, res, url)
 			break
+
+		case '/landing' :
+
+			landing(req, res, url)
+			break 
 		
 		case '/category' :
 
@@ -39,7 +44,7 @@ HTTP.createServer((req, res) => {
 
 		default :
 			
-			landing(req, res, url)
+			index(req, res, url)
 			break
 	}
 
@@ -47,52 +52,57 @@ HTTP.createServer((req, res) => {
 
 
 // Route handlers 
+function index(req, res, url) {
+	PRODUCT.getProducts()
+	.then(allProducts => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(allProducts))
+	})
+	.catch(error => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(error))
+	})
+}
+
 function landing(req, res, url) {
-	PRODUCT.getProducts(req, res) 
-		.then(products => {
-			const response = {products: products}
-			res.writeHead(200, defaultHeaders('application/json'))
-			res.end(JSON.stringify(response), console.log('Landing page response...'))
-		})
-		.catch(error => {
-			res.writeHead(200, defaultHeaders('application/json'))
-			res.end(JSON.stringify(error))
-		})
+	PRODUCT.getLatestProducts()
+	.then(latestProducts => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(latestProducts))
+	})
+	.catch(error => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(error))
+	})
 }
 
 // Parse query params and ping database accordingly
 function category(req, res, url) {
-
 	parseQuery(url)
-		.then(parsedQuery => {
-			console.log(parsedQuery)
-			return PRODUCT.getProductsByCategory(parsedQuery.name) 
-		})
-		.then(products => {
-			console.log(products)
-			res.writeHead(200, defaultHeaders('application/json'))
-			res.end(JSON.stringify(products), console.log('Category page response..'))
-		})
-		.catch(error => {
-			console.error(error) // Reroute user to '/' : perhaps for all errors on FE
-		})
-
+	.then(parsedQuery => {
+		return PRODUCT.getProductsByCategory(parsedQuery.name) 
+	})
+	.then(products => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(products))
+	})
+	.catch(error => {
+		console.error(error) // Reroute user to '/' : perhaps for all errors on FE
+	})
 }
 
 function product(req, res, url) {
-
 	parseQuery(url)
-		.then(parsedQuery => {
-			return PRODUCT.getProductById(parsedQuery.id) 
-		})
-		.then(product => {
-			res.writeHead(200, defaultHeaders('application/json'))
-			res.end(JSON.stringify(product), console.log('Product page response..'))
-		})
-		.catch(error => {
-			console.error(error) // Reroute user to '/' : perhaps for all errors on FE
-		})
-
+	.then(parsedQuery => {
+		return PRODUCT.getProductById(parsedQuery.id) 
+	})
+	.then(product => {
+		res.writeHead(200, defaultHeaders('application/json'))
+		res.end(JSON.stringify(product))
+	})
+	.catch(error => {
+		console.error(error) // Reroute user to '/' : perhaps for all errors on FE
+	})
 }
 
 // Helpers

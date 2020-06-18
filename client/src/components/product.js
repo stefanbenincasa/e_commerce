@@ -24,7 +24,7 @@ import {
 	Button
 } from 'reactstrap' 
 
-export default withRouter(function Product({encode, decode}) {
+export default withRouter(function Product({encode, decode, addToCart}) {
 
 	/// Hooks
 	const desiredId = useParams().productId
@@ -44,7 +44,7 @@ export default withRouter(function Product({encode, decode}) {
 			setOutput( <h1>{error.message}</h1> ) 
 		})
 
-	}, [])
+	}, [desiredId])
 
 	/// Functions
 
@@ -52,9 +52,11 @@ export default withRouter(function Product({encode, decode}) {
 	const getBody = function (product) {
 		return (
 			<>
+
 				<img 
 				className='thumbnail'
 				src={product.thumbnail} />
+
 				<div
 				className='details'
 				>
@@ -71,12 +73,16 @@ export default withRouter(function Product({encode, decode}) {
 						<p className='price'> 
 							$ {product.price} 
 						</p>
-						<Button className='addToCart'> 
-							Add to Cart 
-						</Button>
+							<Button 
+							id='addToCart' 
+							onClick={() => addToCart(desiredId)}
+							>
+								Add To Cart
+							</Button>
 					</div> 
 
 				</div>
+
 			</>
 		)
 	}

@@ -33,30 +33,28 @@ import {
 export default withRouter(function App() {
 
 	/// Hooks
-
-	// Basic 
 	const [categories, setCategories] = useState()
 	const [dropdownOpen, setDropdownOpen] = useState(false)
+	const [cart, setCart] = useState()
 
-	// Data from server 
 	useEffect(() => {
 
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
-		.then(data =>  {
-			setCategories(getCategories(data.products))
+		.then(allProducts =>  {
+			setCategories(getCategories(allProducts))
 		})
 
 		return () => setDropdownOpen(false)
 		
-	}, [])
+	}, [setCart])
 
 	/// Functions
 
 	const toggleDropdown = () => setDropdownOpen(prevState => !prevState)
 
-	const getCategories = (products) => {
-		return products.map(product => {
+	const getCategories = (allProducts) => {
+		return allProducts.map(product => {
 			return (
 				<DropdownItem
 				className='default'
@@ -68,6 +66,18 @@ export default withRouter(function App() {
 				</DropdownItem>
 			)
 		})
+	}
+
+	// Add to cart
+	const addToCart = function(productId) {
+		fetch(`http://localhost:5000/product?id=${productId}`)
+		.then(res => res.json())
+		.then(product => {
+			setCart('Test')
+			console.log(cart)
+		})
+		.then(() => console.log('Other Test'))
+		.catch(console.error)
 	}
 
 	// Insert underscore delimiter 
@@ -136,6 +146,7 @@ export default withRouter(function App() {
 					<Product 
 					encode={encode}
 					decode={decode}
+					addToCart={addToCart}
 					/>
 				}
 				/>
@@ -145,7 +156,10 @@ export default withRouter(function App() {
 				exact path='/'
 				render={ 
 					() => 
-					<Landing /> 
+					<Landing 
+					encode={encode}
+					decode={decode}
+					/> 
 				}
 				/>
 

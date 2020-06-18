@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react'
+import ProductPreview from './productPreview'
 
 import { 
 	Nav, 
+	Spinner,
 	NavItem, 
 	NavLink, 
 	Jumbotron,
@@ -23,23 +25,50 @@ import {
 	withRouter 
 } from 'react-router'
 
-export default function Landing(props) {
-
-	/// Variables
+export default function Landing({encode, decode}) {
 
 	/// Hooks
+	const [latestProducts, setLatestProducts] = useState()
+
+	useEffect(() => {
+
+		setLatestProducts(<Spinner type='grow' color='primary'/>)
+
+		setTimeout(() => {
+			fetch(`http://localhost:5000/landing`)
+			.then(res => res.json())
+			.then(latestProducts => setLatestProducts(getLatestCards(latestProducts)))
+			.catch(error => console.error(error.message))
+		}, 1000)
+
+	}, [setLatestProducts])
 
 	/// Functions
+	const getLatestCards = function (latestProducts) {
+		return latestProducts.map(product => {
+			return (
+				<ProductPreview
+				key={product.productId}
+				productId={product.productId}
+				productName={product.productName}
+				description={product.description}
+				thumbnail={product.thumbnail}
+				/>
+			)
+		})
+	}
 
 	/// Render
 	return (
 		<div
 		className='Landing'>
+
 			<Jumbotron
 			id='landingBanner'
 			className='banner'>
 				<h1>
-					The <span className='highlight'>latest</span><br></br>
+					The <span className='highlight'>best</span>
+					<br></br>
 					the market has to offer
 				</h1>
 				<h2>
@@ -48,10 +77,13 @@ export default function Landing(props) {
 				</h2>
 				<div className='overlay'></div>
 			</Jumbotron>
+
+			<h3> Latest Products </h3>
 			<div
 			id='latestItems'>
-				// Cards of products here ordered latest to oldest
+				{latestProducts}
 			</div>
+			
 		</div>
 	)
 }
