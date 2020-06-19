@@ -24,7 +24,7 @@ import {
 	Button
 } from 'reactstrap' 
 
-export default withRouter(function Product({encode, decode, addToCart}) {
+export default withRouter(function Product({encode, decode, cart, addToCart}) {
 
 	/// Hooks
 	const desiredId = useParams().productId
@@ -46,13 +46,16 @@ export default withRouter(function Product({encode, decode, addToCart}) {
 
 	}, [desiredId])
 
+	useEffect(() => {
+		cart.length > 0 && console.log(cart)
+	}, [cart])
+
 	/// Functions
 
 	// Determine output
 	const getBody = function (product) {
 		return (
 			<>
-
 				<img 
 				className='thumbnail'
 				src={product.thumbnail} />
@@ -75,14 +78,12 @@ export default withRouter(function Product({encode, decode, addToCart}) {
 						</p>
 							<Button 
 							id='addToCart' 
-							onClick={() => addToCart(desiredId)}
+							onClick={ () => addToCart(desiredId) }
 							>
 								Add To Cart
 							</Button>
 					</div> 
-
 				</div>
-
 			</>
 		)
 	}

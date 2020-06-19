@@ -35,23 +35,52 @@ export default withRouter(function App() {
 	/// Hooks
 	const [categories, setCategories] = useState()
 	const [dropdownOpen, setDropdownOpen] = useState(false)
-	const [cart, setCart] = useState()
+	const [cart, setCart] = useState([])
 
 	useEffect(() => {
 
+		// Set Cart from localStorage, tracks state over page reload
+		let storage = sessionStorage.getItem('cart') 
+		if (storage !== null) {
+			storage = JSON.parse(storage)
+			storage.forEach(product => {
+				setCart(prevState => prevState.concat(product))
+			})
+		}
+
+		// Fetch categories for Dropdown from server
 		fetch('http://localhost:5000/')
 		.then(res => res.json())
 		.then(allProducts =>  {
 			setCategories(getCategories(allProducts))
 		})
 
-		return () => setDropdownOpen(false)
+		// Reset visible state of Dropdown
+		return () => {
+			setDropdownOpen(false)
+		}
 		
 	}, [setCart])
 
 	/// Functions
 
 	const toggleDropdown = () => setDropdownOpen(prevState => !prevState)
+
+	// Append to sessionStorage if data present, else set intial
+	const addToSession = (product) => {
+
+		let cart = []
+		if (sessionStorage.getItem('cart') !== null) {
+			cart = JSON.parse(sessionStorage.getItem('cart'))
+			cart.push(product)
+			sessionStorage.setItem('cart', JSON.stringify(cart))
+		}
+		else {
+			cart.push(product)
+			sessionStorage.setItem('cart', JSON.stringify(cart))
+		}
+
+	}
 
 	const getCategories = (allProducts) => {
 		return allProducts.map(product => {
@@ -73,11 +102,10 @@ export default withRouter(function App() {
 		fetch(`http://localhost:5000/product?id=${productId}`)
 		.then(res => res.json())
 		.then(product => {
-			setCart('Test')
-			console.log(cart)
+			setCart(currentProducts => currentProducts.concat(product))
+			addToSession(product)
 		})
-		.then(() => console.log('Other Test'))
-		.catch(console.error)
+		.catch(console.error) 
 	}
 
 	// Insert underscore delimiter 
@@ -99,30 +127,31 @@ export default withRouter(function App() {
 			
 	} 
 
-	// Display error
-
 	/// Render
 	return (
 		<div className="App">
 
 			<Nav>
 				<p
-				className='default'
 				id='nav_header'>
 					Stop N Shop
 				</p>
-				<Dropdown
-				nav
-				className='default'
-				isOpen={dropdownOpen}
-				toggle={toggleDropdown}>
-					<DropdownToggle nav caret>
-						Products	
-					</DropdownToggle>
-					<DropdownMenu children>
-						{categories !== undefined && categories}
-					</DropdownMenu>
-				</Dropdown>
+				<div 
+				id='navigation'>
+					<Dropdown
+					nav
+					className='default'
+					isOpen={dropdownOpen}
+					toggle={toggleDropdown}>
+						<DropdownToggle nav caret>
+							Products	
+						</DropdownToggle>
+						<DropdownMenu children>
+							{categories !== undefined && categories}
+						</DropdownMenu>
+					</Dropdown>
+					<i className='fas fa-shopping-cart'></i>
+				</div>
 			</Nav>
 
 			<Switch>
@@ -146,6 +175,7 @@ export default withRouter(function App() {
 					<Product 
 					encode={encode}
 					decode={decode}
+					cart={cart}
 					addToCart={addToCart}
 					/>
 				}
