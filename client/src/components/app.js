@@ -4,6 +4,8 @@ import React, {useState, useEffect} from 'react'
 import Product from './product'
 import Landing from './landing'
 import Category from './category'
+import Cart from './cart'
+
 import '../stylesheets/app.css'
 
 import { 
@@ -36,7 +38,9 @@ export default withRouter(function App() {
 	const [categories, setCategories] = useState()
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [cart, setCart] = useState([])
+	const [cartBadge, setCartBadge] = useState(false)
 
+	// Initial setup on load || App mount
 	useEffect(() => {
 
 		// Set Cart from localStorage, tracks state over page reload
@@ -62,7 +66,22 @@ export default withRouter(function App() {
 		
 	}, [setCart])
 
+	// Cart onChange
+	useEffect(() => {
+		cart.length > 0 ? alterCartBadge('add') : alterCartBadge('remove')	
+	}, [cart])
+
 	/// Functions
+
+	// Add or remove badge to cart icon based on status
+	const alterCartBadge = function (action) {
+		if (action === 'add') {
+			setCartBadge(true)
+		}
+		else if (action === 'remove') {
+			setCartBadge(false)
+		}
+	}
 
 	const toggleDropdown = () => setDropdownOpen(prevState => !prevState)
 
@@ -98,7 +117,7 @@ export default withRouter(function App() {
 	}
 
 	// Add to cart
-	const addToCart = function(productId) {
+	const addToCart = function (productId) {
 		fetch(`http://localhost:5000/product?id=${productId}`)
 		.then(res => res.json())
 		.then(product => {
@@ -106,6 +125,10 @@ export default withRouter(function App() {
 			addToSession(product)
 		})
 		.catch(console.error) 
+	}
+
+	// Remove from cart
+	const removeFromCart = function (productId) {
 	}
 
 	// Insert underscore delimiter 
@@ -150,14 +173,19 @@ export default withRouter(function App() {
 							{categories !== undefined && categories}
 						</DropdownMenu>
 					</Dropdown>
-					<i className='fas fa-shopping-cart'></i>
+					<a 
+					id='cart_icon'
+					href='/cart'>
+						{cartBadge && <span id='cart_badge'>{cart.length}</span>}
+						<i className='fas fa-shopping-cart'></i>
+					</a>
 				</div>
 			</Nav>
 
 			<Switch>
 
 				<Route 
-				exact path='/category/:name'
+				path='/category/:name'
 				render={
 					() =>
 					<Category 
@@ -169,7 +197,7 @@ export default withRouter(function App() {
 				<Redirect from='/category' to='/' />
 
 				<Route 
-				exact path='/product/:productId'
+				path='/product/:productId'
 				render={
 					() => 
 					<Product 
@@ -182,6 +210,19 @@ export default withRouter(function App() {
 				/>
 				<Redirect from='/product' to='/' />
 
+				<Route
+				path='/cart'
+				render={
+					() => 
+					<Cart
+					encode={encode}
+					decode={decode}
+					cart={cart}
+					removeFromCart={removeFromCart}
+					/>
+				}
+				/>	
+				
 				<Route 
 				exact path='/'
 				render={ 

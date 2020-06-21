@@ -32,7 +32,12 @@ export default function Landing({encode, decode}) {
 
 	useEffect(() => {
 
-		setLatestProducts(<Spinner type='grow' color='primary'/>)
+		setLatestProducts(
+			<Spinner 
+			style={{position: 'absolute', left: '50%', top: '50%'}}
+			type='grow' 
+			color='primary'/>
+		)
 
 		setTimeout(() => {
 			fetch(`http://localhost:5000/landing`)
