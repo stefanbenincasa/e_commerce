@@ -348,6 +348,11 @@ html, body {
 		margin: auto;
 	}
 
+	.Checkout .placeOrder {
+		width: 50%;
+		margin-top: 2rem;
+	}
+
 /* Utility Classes */
 .highlight {
 	color: pink;

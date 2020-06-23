@@ -68,6 +68,16 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 		)
 	}
 
+	// Get JSX for completion of order 
+	const getOrderComplete = function () {
+		setTimeout(() => setOutput(getForm()), 3000)
+		return (
+			<>
+				<h1> Order complete </h1> 
+			</>
+		)
+	}
+
 	// Form for address and payment input 
 	const getForm = function () {
 		return (
@@ -168,6 +178,14 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 
 					</Form>
 				</Card>
+
+				<Button 
+				className='placeOrder'
+				color='primary'
+				onClick={() => setOutput(getOrderComplete())}
+				> 
+					Place Order 
+				</Button>
 			</>
 		)
 	}
