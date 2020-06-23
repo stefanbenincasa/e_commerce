@@ -250,13 +250,23 @@ html, body {
 
 .Cart {
 	height: 75%;
-	width: 100%;
 	margin-top: 1rem;
 	padding: 2rem 0;
 	position: relative;
+	display: flex; 
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
+	.Cart .cards {
+		height: 75%;
+		width: 75%;
+		padding: 1rem;
+		margin: 1rem 0;
+		border-top: 1px solid var(--primary-color);
+		border-bottom: 1px solid var(--primary-color);
+	} 
 	.Cart .card {
-		width: 50%;
 		margin: auto;
 		margin-bottom: 1rem;
 		padding: 1rem;
@@ -265,9 +275,77 @@ html, body {
 		justify-content: space-evenly;
 		align-items: center;
 	}
+	.Cart .actions {
+		width: 75%;
+		display: flex;
+		justify-content: space-between;
+	}
 	.Cart img {
 		height: 50px;
 		width: 50px;
+	}
+
+.Checkout {
+	height: 100%;
+	width: 100%;
+	margin-top: 2rem;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	color: var(--primary-color);
+}
+	.Checkout .card {
+		height: 100%;
+		width: 50%;
+		margin: auto;
+		overflow: scroll;
+		border: none;
+		box-shadow: 1px 1px 10px var(--primary-color);
+	}
+	.Checkout .card-title {
+		padding: 1rem;
+		text-align: center;
+		font-size: 2rem;
+		font-weight: bolder;
+	}
+	.Checkout form {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.Checkout .names {
+		width: 75%;
+		margin: auto;
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr 1fr;
+	}
+		.Checkout .names input {
+			width: 100%;
+			margin: auto;
+		}
+
+	.Checkout .email { 
+		width: 75%;
+		margin: auto;
+	}
+
+	.Checkout .address {
+		width: 75%;
+		margin: 2rem auto;
+		display: grid;
+		grid-gap: 1rem;
+		grid-template-columns: 1fr 2fr;
+		grid-template-rows: repeat(3, 1fr);
+	}
+
+	.Checkout .payment {
+		width: 75%;
+		margin: auto;
 	}
 
 /* Utility Classes */

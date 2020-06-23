@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react'
 import Product from './product'
 import Landing from './landing'
 import Category from './category'
+import Checkout from './checkout'
 import Cart from './cart'
 
 import '../stylesheets/app.css'
@@ -36,8 +37,8 @@ export default withRouter(function App() {
 
 	/// Hooks
 	const [categories, setCategories] = useState()
-	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [cart, setCart] = useState([])
+	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [cartBadge, setCartBadge] = useState(false)
 
 	// Initial setup on load || App mount
@@ -69,6 +70,7 @@ export default withRouter(function App() {
 	// Cart onChange
 	useEffect(() => {
 		cart.length > 0 ? alterCartBadge('add') : alterCartBadge('remove')	
+		console.log(cart)
 	}, [cart])
 
 	/// Functions
@@ -127,8 +129,11 @@ export default withRouter(function App() {
 		.catch(console.error) 
 	}
 
-	// Remove from cart
+	// Remove from cart & storage
 	const removeFromCart = function (productId) {
+		let newCart = cart.filter(product => product.productId !== productId)
+		sessionStorage.setItem('cart', JSON.stringify(newCart))
+		setCart(newCart)
 	}
 
 	// Insert underscore delimiter 
@@ -194,7 +199,6 @@ export default withRouter(function App() {
 					/>
 				}
 				/>
-				<Redirect from='/category' to='/' />
 
 				<Route 
 				path='/product/:productId'
@@ -208,7 +212,6 @@ export default withRouter(function App() {
 					/>
 				}
 				/>
-				<Redirect from='/product' to='/' />
 
 				<Route
 				path='/cart'
@@ -219,6 +222,18 @@ export default withRouter(function App() {
 					decode={decode}
 					cart={cart}
 					removeFromCart={removeFromCart}
+					/>
+				}
+				/>	
+
+				<Route
+				path='/checkout'
+				render={
+					() => 
+					<Checkout
+					encode={encode}
+					decode={decode}
+					cart={cart}
 					/>
 				}
 				/>	

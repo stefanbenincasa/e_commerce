@@ -31,7 +31,6 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 	const params = useParams()
 	const [output, setOutput] = useState()
 
-
 	useEffect(() => {
 
 		setOutput(
@@ -42,21 +41,41 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 			/>
 		)
 
-		if (cart !== undefined && cart.length > 0) {
-			setTimeout(() => {
-				setOutput(getCartProducts())
-			}, 3000)
+		if (cart === undefined && cart.length <= 0) {
+			setOutput(getNoItems())
 		}
 		else {
-			setOutput(defaultOutput())
+			setTimeout(() => {
+				setOutput(getMainView())
+			}, 3000)
 		}
 
 	}, [cart])
 
 	/// Functions
 
-	// Products in cart output
-	const getCartProducts = function () {
+	// Product view 
+	const getMainView = function () {
+		return (
+			<>
+				<h1 style={{color: 'pink'}}> 
+					Shopping Cart 
+				</h1>
+				<div className='cards'> 
+					{getProductCards()} 
+				</div>
+				<div className='actions'>
+					<p> <strong>Total</strong> {getPriceSum()} </p>
+					<Button color='primary'>
+						<Link to='/checkout' style={{color: 'white'}}> Checkout</Link>
+					</Button>	
+				</div>
+			</>
+		)
+	}
+
+	// Product cards
+	const getProductCards = function () {
 		return cart.map(product => {
 			return (
 				<Card
@@ -67,15 +86,24 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 					src={product.thumbnail}
 					alt='Product image...'
 					/>
-					<CardTitle> {product.productName} </CardTitle>
-					<CardText> $ {product.price} </CardText>
+					<CardTitle>
+						{product.productName} 
+					</CardTitle>
+					<CardText>
+						$ {product.price} 
+					</CardText>
+					<Button 
+					color='secondary'
+					onClick={() => removeFromCart(product.productId)} >
+						Remove 
+					</Button>
 				</Card>
 			)
 		})
 	}
 
 	// Determine spinner output for interim or null output
-	const defaultOutput = function () {
+	const getNoItems = function () {
 		return (
 			<>
 				<h1> No products in Cart. </h1>
@@ -84,6 +112,16 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 		)
 	}
 	
+	const getPriceSum = function () {
+
+		let sum = 0
+		cart.forEach(product => {
+			sum += product.price 	
+		})
+		sum = parseFloat(sum).toFixed(2)
+
+		return `$ ${sum}`
+	}
 
 	/// Render
 	return (
