@@ -38,7 +38,6 @@ export default withRouter(function Category({encode, decode}) {
 		setOutput(spinner())
 		
 		// Fetch data from DB by category 'name'
-		let newStyles 
 		setTimeout(() => {
 			fetch(`http://localhost:5000/category?name=${params.name}`)
 			.then(res => {
@@ -80,15 +79,7 @@ export default withRouter(function Category({encode, decode}) {
 		
 		return (
 			<Spinner 
-			style={
-				{ 
-					width: '8rem', 
-					height: '8rem', 
-					position: 'absolute',
-					left: '50%',
-					top: '50%'
-				}
-			} 
+			style={{ position: 'absolute', left: '50%', top: '50%' }} 
 			color='primary'
 			type="grow" 
 			/>

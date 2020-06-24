@@ -41,13 +41,18 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 			/>
 		)
 
-		if (cart === undefined && cart.length <= 0) {
-			setOutput(getNoItems())
+		if (cart === undefined) {
+			return
+		}
+		else if (cart.length == 0) {
+			setOutput(<p>No items in Cart</p>)
 		}
 		else {
-			setTimeout(() => {
-				setOutput(getMainView())
-			}, 3000)
+			setOutput(getMainView())
+		}
+
+		return () => {
+			console.log('Unmounting...') 
 		}
 
 	}, [cart])

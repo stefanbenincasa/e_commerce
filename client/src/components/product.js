@@ -46,10 +46,6 @@ export default withRouter(function Product({encode, decode, cart, addToCart}) {
 
 	}, [desiredId])
 
-	useEffect(() => {
-		cart.length > 0 && console.log(cart)
-	}, [cart])
-
 	/// Functions
 
 	// Determine output

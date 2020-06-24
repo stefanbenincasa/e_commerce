@@ -37,7 +37,7 @@ export default withRouter(function App() {
 
 	/// Hooks
 	const [categories, setCategories] = useState()
-	const [cart, setCart] = useState([])
+	const [cart, setCart] = useState(undefined)
 	const [dropdownOpen, setDropdownOpen] = useState(false)
 	const [cartBadge, setCartBadge] = useState(false)
 
@@ -47,10 +47,11 @@ export default withRouter(function App() {
 		// Set Cart from localStorage, tracks state over page reload
 		let storage = sessionStorage.getItem('cart') 
 		if (storage !== null) {
-			storage = JSON.parse(storage)
-			storage.forEach(product => {
-				setCart(prevState => prevState.concat(product))
-			})
+			let cartedItems = JSON.parse(storage)
+			setCart(cartedItems)
+		}
+		else {
+			setCart([])
 		}
 
 		// Fetch categories for Dropdown from server
@@ -69,8 +70,10 @@ export default withRouter(function App() {
 
 	// Cart onChange
 	useEffect(() => {
-		cart.length > 0 ? alterCartBadge('add') : alterCartBadge('remove')	
-		console.log(cart)
+		if (cart !== undefined) {
+			cart.length > 0 ? 
+			alterCartBadge('add') : alterCartBadge('remove')	
+	}
 	}, [cart])
 
 	/// Functions
@@ -93,16 +96,17 @@ export default withRouter(function App() {
 		let cart = []
 		if (sessionStorage.getItem('cart') !== null) {
 			cart = JSON.parse(sessionStorage.getItem('cart'))
-			cart.push(product)
+			cart.push(product[0])
 			sessionStorage.setItem('cart', JSON.stringify(cart))
 		}
 		else {
-			cart.push(product)
+			cart.push(product[0])
 			sessionStorage.setItem('cart', JSON.stringify(cart))
 		}
 
 	}
 
+	// Get all categories from server
 	const getCategories = (allProducts) => {
 		return allProducts.map(product => {
 			return (
@@ -123,6 +127,8 @@ export default withRouter(function App() {
 		fetch(`http://localhost:5000/product?id=${productId}`)
 		.then(res => res.json())
 		.then(product => {
+			console.log(product)
+			console.log(cart)
 			setCart(currentProducts => currentProducts.concat(product))
 			addToSession(product)
 		})
@@ -131,9 +137,22 @@ export default withRouter(function App() {
 
 	// Remove from cart & storage
 	const removeFromCart = function (productId) {
-		let newCart = cart.filter(product => product.productId !== productId)
-		sessionStorage.setItem('cart', JSON.stringify(newCart))
-		setCart(newCart)
+
+		const newCartCreated = new Promise((resolve, reject) => {
+			const newCart = cart.filter(product => product.productId !== productId)
+			newCart === undefined ? 
+			reject(Error('Can not remove from empty cart'))	:
+			resolve(newCart)
+		})
+
+		newCartCreated
+		.then(newCart => {
+			sessionStorage.setItem('cart', JSON.stringify(newCart))
+			setCart(newCart)
+			return Promise.resolve('Cart set')
+		})
+		.then(console.log)
+		.catch(console.error)
 	}
 
 	// Insert underscore delimiter 

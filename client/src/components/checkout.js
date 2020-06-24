@@ -45,18 +45,49 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 			/>
 		)
 
-		if (cart === undefined && cart.length <= 0) {
-			setOutput(getNoItems())
-		}
-		else {
+		if (cart !== undefined && cart.length > 0) {
 			setTimeout(() => {
 				setOutput(getForm())
 			}, 3000)
+		}
+		else {
+			setOutput(getNoItems())
 		}
 
 	}, [cart])
 
 	/// Functions
+
+	// Handle form submission
+	const handleSubmit = function (e) {
+		e.preventDefault()
+		setOutput(getOrderComplete())
+	}
+
+	// Form validation
+	const formValidation = function (e, section) {
+
+		const inputText = e.target.value
+		const regexes = { 
+			name: /^[a-zA-Z]{2,10}$/,
+			email: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+			address: /^[a-zA-Z]{2,20}$/,
+			city: /^[a-zA-Z]{2,20}$/,
+			country: /^[a-zA-Z]{2,20}$/,
+			postcode: /^[a-zA-Z]{4,4}$/,
+			cardNumber: /^[0-9]{16,16}$/,
+			securityCode: /^[0-9]{3,3}$/
+		} 
+
+		// If text of input passes respective test, add/remove error indication to
+		// to element accordingly
+		let output
+		for (let regex in regexes) {
+			output = regex === section && regexes[regex].test(inputText)
+		}
+		console.log(output)
+
+	}
 
 	// Determine spinner output for interim or null output
 	const getNoItems = function () {
@@ -82,10 +113,9 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 	const getForm = function () {
 		return (
 			<>
-				<Card>
+				<Form>
+					<Card>
 					<CardTitle> Order Details </CardTitle>
-					<Form>
-
 						<FormGroup className='names'>
 							<FormGroup>
 								<Label
@@ -96,6 +126,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='firstName'
 								id='firstName'
+								onChange={e => formValidation(e, 'name')} 
 								/>
 							</FormGroup>
 							<FormGroup>
@@ -107,6 +138,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='lastName'
 								id='lastName'
+								onChange={e => formValidation(e, 'name')} 
 								/>
 							</FormGroup>
 						</FormGroup>
@@ -117,34 +149,39 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 							type='email'
 							name='email'
 							id='email'
+							onChange={e => formValidation(e, 'email')} 
 							/>
 						</FormGroup>
 
 						<FormGroup className='address'>
 							<FormGroup 
-							style={{gridColumn: '1/3'}}>
+							style={{gridColumn: '1/4'}}>
 								<Label for='address'> Address </Label>
 								<Input
 								type='text'
 								name='address'
 								id='address'
+								onChange={e => formValidation(e, 'address')} 
 								/>
 							</FormGroup> 
 							<FormGroup
-							style={{gridColumn: '1/3'}}>
+							style={{gridColumn: '1/4'}}>
 								<Label for='city'> City </Label>
 								<Input
 								type='text'
 								name='city'
 								id='city'
+								onChange={e => formValidation(e, 'city')} 
 								/>
 							</FormGroup> 
-							<FormGroup>
+							<FormGroup
+							style={{gridColumn: '1/3'}}>
 								<Label for='country'> Country </Label>
 								<Input
 								type='text'
 								name='country'
 								id='country'
+								onChange={e => formValidation(e, 'country')} 
 								/>
 							</FormGroup> 
 							<FormGroup>
@@ -153,6 +190,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='postcode'
 								id='postcode'
+								onChange={e => formValidation(e, 'postcode')} 
 								/>
 							</FormGroup> 
 						</FormGroup>
@@ -164,6 +202,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='cardNumber'
 								id='cardNumber'
+								onChange={e => formValidation(e, 'cardNumber')} 
 								/>
 							</FormGroup>
 							<FormGroup>
@@ -172,20 +211,21 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='securityCode'
 								id='securityCode'
+								onChange={e => formValidation(e, 'securityCode')} 
 								/>
 							</FormGroup>
 						</FormGroup>
 
-					</Form>
-				</Card>
+						<Button 
+						style={{width: '75%'}}
+						className='placeOrder'
+						color='primary'
+						> 
+							Place Order 
+						</Button>
 
-				<Button 
-				className='placeOrder'
-				color='primary'
-				onClick={() => setOutput(getOrderComplete())}
-				> 
-					Place Order 
-				</Button>
+					</Card>
+				</Form>
 			</>
 		)
 	}
