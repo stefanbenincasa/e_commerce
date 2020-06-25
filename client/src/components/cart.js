@@ -45,14 +45,10 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 			return
 		}
 		else if (cart.length == 0) {
-			setOutput(<p>No items in Cart</p>)
+			setOutput(getNoItems())
 		}
 		else {
 			setOutput(getMainView())
-		}
-
-		return () => {
-			console.log('Unmounting...') 
 		}
 
 	}, [cart])
@@ -84,6 +80,7 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 		return cart.map(product => {
 			return (
 				<Card
+				style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}
 				id={product.productId}
 				key={product.productId}>
 					<CardImg 
@@ -92,7 +89,7 @@ export default withRouter(function Cart({encode, decode, cart, removeFromCart}) 
 					alt='Product image...'
 					/>
 					<CardTitle>
-						{product.productName} 
+						{decode(product.productName)} 
 					</CardTitle>
 					<CardText>
 						$ {product.price} 

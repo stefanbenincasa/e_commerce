@@ -1,3 +1,0 @@
-// Insert sample into USER
-INSERT INTO USER(userId, password, username) VALUES( 123456, '123herman', 'herman');
-

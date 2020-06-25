@@ -29,7 +29,7 @@ import {
 	withRouter 
 } from 'react-router'
 
-export default withRouter(function Checkout({encode, decode, cart}) {
+export default withRouter(function Checkout({encode, decode, cart, setCart}) {
 
 	/// Hooks 
 	const params = useParams()
@@ -44,14 +44,15 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 			type='grow' 
 			/>
 		)
-
-		if (cart !== undefined && cart.length > 0) {
-			setTimeout(() => {
-				setOutput(getForm())
-			}, 3000)
+		
+		if (cart === undefined) {
+			return
+		}
+		else if (cart.length == 0) {
+			setOutput(getNoItems())
 		}
 		else {
-			setOutput(getNoItems())
+			setOutput(getForm())
 		}
 
 	}, [cart])
@@ -68,8 +69,15 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 	const formValidation = function (e, section) {
 
 		const inputText = e.target.value
+		
+		// If error class already present on element, reset, else continue
+		const element = e.target
+		element.classList.forEach(item => {
+			item === 'error' && element.classList.remove('error') 
+		})
+
 		const regexes = { 
-			name: /^[a-zA-Z]{2,10}$/,
+			name: /^[a-zA-Z]{2,30}$/,
 			email: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
 			address: /^[a-zA-Z]{2,20}$/,
 			city: /^[a-zA-Z]{2,20}$/,
@@ -81,12 +89,39 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 
 		// If text of input passes respective test, add/remove error indication to
 		// to element accordingly
-		let output
-		for (let regex in regexes) {
-			output = regex === section && regexes[regex].test(inputText)
-		}
-		console.log(output)
+		let isValidInput = new Promise((resolve, reject) => {
 
+			try {
+				for (let regex in regexes) {
+					regex === section && resolve(regexes[regex].test(inputText))
+				} 
+			}
+			catch (error) {
+				reject(error.message)
+			}
+
+		})
+
+		isValidInput
+		.then(isValid => {
+			setClasses(isValid, element)
+		})
+		.catch(message => {
+			console.error(message)
+		})
+
+	}
+
+	// Determine assingment of 'error' class to classList
+	const setClasses = function (boolean, element) {
+		if(boolean === true) {
+			element.classList.add('success') 
+			element.classList.remove('error')
+		}
+		else {
+			element.classList.add('error') 
+			element.classList.remove('success') 
+		} 
 	}
 
 	// Determine spinner output for interim or null output
@@ -99,9 +134,14 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 		)
 	}
 
-	// Get JSX for completion of order 
+	// Get JSX for completion of order & reset Cart
 	const getOrderComplete = function () {
-		setTimeout(() => setOutput(getForm()), 3000)
+
+		setTimeout(() => {
+			setCart([])
+			sessionStorage.removeItem('cart')
+		}, 3000)
+		
 		return (
 			<>
 				<h1> Order complete </h1> 
@@ -126,7 +166,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='firstName'
 								id='firstName'
-								onChange={e => formValidation(e, 'name')} 
+								onBlur={e => formValidation(e, 'name')} 
 								/>
 							</FormGroup>
 							<FormGroup>
@@ -138,7 +178,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='lastName'
 								id='lastName'
-								onChange={e => formValidation(e, 'name')} 
+								onBlur={e => formValidation(e, 'name')} 
 								/>
 							</FormGroup>
 						</FormGroup>
@@ -149,7 +189,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 							type='email'
 							name='email'
 							id='email'
-							onChange={e => formValidation(e, 'email')} 
+							onBlur={e => formValidation(e, 'email')} 
 							/>
 						</FormGroup>
 
@@ -161,7 +201,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='address'
 								id='address'
-								onChange={e => formValidation(e, 'address')} 
+								onBlur={e => formValidation(e, 'address')} 
 								/>
 							</FormGroup> 
 							<FormGroup
@@ -171,7 +211,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='city'
 								id='city'
-								onChange={e => formValidation(e, 'city')} 
+								onBlur={e => formValidation(e, 'city')} 
 								/>
 							</FormGroup> 
 							<FormGroup
@@ -181,7 +221,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='country'
 								id='country'
-								onChange={e => formValidation(e, 'country')} 
+								onBlur={e => formValidation(e, 'country')} 
 								/>
 							</FormGroup> 
 							<FormGroup>
@@ -190,7 +230,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='postcode'
 								id='postcode'
-								onChange={e => formValidation(e, 'postcode')} 
+								onBlur={e => formValidation(e, 'postcode')} 
 								/>
 							</FormGroup> 
 						</FormGroup>
@@ -202,7 +242,7 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='cardNumber'
 								id='cardNumber'
-								onChange={e => formValidation(e, 'cardNumber')} 
+								onBlur={e => formValidation(e, 'cardNumber')} 
 								/>
 							</FormGroup>
 							<FormGroup>
@@ -211,12 +251,13 @@ export default withRouter(function Checkout({encode, decode, cart}) {
 								type='text'
 								name='securityCode'
 								id='securityCode'
-								onChange={e => formValidation(e, 'securityCode')} 
+								onBlur={e => formValidation(e, 'securityCode')} 
 								/>
 							</FormGroup>
 						</FormGroup>
 
 						<Button 
+						onClick={handleSubmit}
 						style={{width: '75%'}}
 						className='placeOrder'
 						color='primary'

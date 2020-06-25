@@ -44,7 +44,7 @@ export default withRouter(function Product({encode, decode, cart, addToCart}) {
 			setOutput( <h1>{error.message}</h1> ) 
 		})
 
-	}, [desiredId])
+	}, [desiredId, cart])
 
 	/// Functions
 
@@ -74,7 +74,7 @@ export default withRouter(function Product({encode, decode, cart, addToCart}) {
 						</p>
 							<Button 
 							id='addToCart' 
-							onClick={ () => addToCart(desiredId) }
+							onClick={ () => addToCart(desiredId, cart) }
 							>
 								Add To Cart
 							</Button>

@@ -56,7 +56,9 @@ export default withRouter(function Category({encode, decode}) {
 
 		return (
 			<div>
-				<h1>{decode(params.name)}</h1>
+				<h1 style={{color: 'pink', fontSize: '2rem'}}>
+					{decode(params.name)}
+				</h1>
 				<div className='products'>
 					{ productsByCategory.map(product => {
 							return (

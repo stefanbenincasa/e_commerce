@@ -123,16 +123,16 @@ export default withRouter(function App() {
 	}
 
 	// Add to cart
-	const addToCart = function (productId) {
+	const addToCart = function (productId, cart) {
+
 		fetch(`http://localhost:5000/product?id=${productId}`)
 		.then(res => res.json())
 		.then(product => {
-			console.log(product)
-			console.log(cart)
 			setCart(currentProducts => currentProducts.concat(product))
 			addToSession(product)
 		})
 		.catch(console.error) 
+
 	}
 
 	// Remove from cart & storage
@@ -179,10 +179,10 @@ export default withRouter(function App() {
 		<div className="App">
 
 			<Nav>
-				<p
+				<Link to='/'
 				id='nav_header'>
-					Stop N Shop
-				</p>
+						Stop N Shop
+				</Link>
 				<div 
 				id='navigation'>
 					<Dropdown
@@ -253,6 +253,7 @@ export default withRouter(function App() {
 					encode={encode}
 					decode={decode}
 					cart={cart}
+					setCart={setCart}
 					/>
 				}
 				/>	

@@ -32,6 +32,20 @@ export default withRouter(function ProductPreview({
 	/// Hooks 
 	const params = useParams()
 
+	// Functions 
+	const decode = function(string) {
+		
+		let capital, suffix
+		const formated = string.split('_').map(word => {
+			capital = word.split('').shift().toUpperCase()
+			suffix = word.substring(1, word.length) 
+			return capital.concat(suffix)
+		}).join(' ')
+	
+		return formated
+			
+	} 
+
 	/// Render
 	return (
 		<Card 
@@ -43,8 +57,9 @@ export default withRouter(function ProductPreview({
 			alt='Product image here...'
 			/>
 			<CardBody>
-				<CardTitle>{productName}</CardTitle>
-				<CardText>{description}</CardText>
+				<CardTitle style={{textAlign: 'center'}}>
+					{decode(productName)}
+				</CardTitle>
 				<Link to={`/product/${productId}`}>
 					<Button> View Product </Button>
 				</Link>
