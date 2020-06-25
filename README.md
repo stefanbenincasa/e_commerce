@@ -27,6 +27,10 @@ A full-stack e_commerce application
 
 4 . SELECT * FROM PRODUCT \G
 
+# Scripts
+Server: npm run start
+Client: npm start
+
 # Additional Information
 - Database default port is 3306
 - Server application runs on port 5000
