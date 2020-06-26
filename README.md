@@ -6,7 +6,7 @@ A full-stack e_commerce application
 
 1 . CREATE DATABASE e_commerce;
 
-2 . USE DATABASE e_commerce;
+2 . USE e_commerce;
 
 3 . CREATE TABLE IF NOT EXISTS product (
     productId INT NOT NULL PRIMARY KEY,
